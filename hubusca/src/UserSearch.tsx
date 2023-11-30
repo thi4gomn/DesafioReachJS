@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import githubLogo from './img/github.gif'; 
+import githubLogo from './img/github.gif'; // Substitua 'nome-da-sua-imagem.png' pelo nome real da sua imagem
+import UserProfile from './UserProfile'; // Importando o componente UserProfile
 
 // Definindo a interface para os dados do usuário do GitHub
 interface GithubUser {
@@ -18,7 +19,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh; // Garante que o Container tenha pelo menos a altura da janela do navegador
   background-color: black;
   color: lime;
 `;
@@ -35,7 +36,7 @@ const Logo = styled.img`
 const SearchInput = styled.input`
   padding: 10px;
   width: 300px;
-  border-radius: 20px; 
+  border-radius: 20px; // Adiciona bordas arredondadas à caixa de texto
 `;
 
 // Definindo os estilos para o botão de busca
@@ -50,11 +51,13 @@ const SearchButton = styled.button`
 
 // Definindo os estilos para as informações do usuário
 const UserInfo = styled.div`
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: center; 
-  margin-top: 20px; 
+  display: flex; // Adiciona flexbox
+  flex-direction: column; // Organiza os itens em uma coluna
+  align-items: center; // Centraliza os itens horizontalmente
+  justify-content: center; // Centraliza os itens verticalmente
+  text-align: center; // Centraliza o texto
+  margin-top: 20px; // Move as informações do usuário para baixo
+  cursor: pointer; // Muda o cursor para um ponteiro quando o mouse está sobre a imagem
 `;
 
 // Definindo o componente UserSearch
@@ -62,6 +65,7 @@ const UserSearch = () => {
   // Definindo o estado para o nome de usuário e os dados do usuário
   const [username, setUsername] = useState('');
   const [userData, setUserData] = useState<GithubUser | null>(null);
+  const [showProfile, setShowProfile] = useState(false); // Novo estado para rastrear se o perfil do usuário deve ser exibido
 
   // Definindo a função para buscar os dados do usuário
   const fetchUser = async () => {
@@ -73,26 +77,37 @@ const UserSearch = () => {
     }
   };
 
+  // Função para lidar com o clique na foto do usuário
+  const handleImageClick = () => {
+    setShowProfile(true); // Define showProfile como true quando a imagem é clicada
+  };
+
   // Retornando o JSX para o componente
   return (
     <Container>
-      <Logo src={githubLogo} alt="GitHub Logo" />
-      <SearchInput
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Digite o nome do usuário do GitHub"
-      />
-      <SearchButton onClick={fetchUser}>Buscar</SearchButton>
+      {!showProfile && ( // Renderiza a página de busca se showProfile for false
+        <>
+          <Logo src={githubLogo} alt="GitHub Logo" />
+          <SearchInput
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Digite o nome do usuário do GitHub"
+          />
+          <SearchButton onClick={fetchUser}>Buscar</SearchButton>
 
-      {userData && (
-        <UserInfo>
-          <img src={userData.avatar_url} alt={userData.name} style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
-          <h2>{userData.name}</h2>
-          <p>{userData.login}</p>
-          <p>{userData.location}</p>
-        </UserInfo>
+          {userData && (
+            <UserInfo onClick={handleImageClick}> {/* Adiciona o manipulador de eventos onClick à imagem */}
+              <img src={userData.avatar_url} alt={userData.name} style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+              <h2>{userData.name}</h2>
+              <p>{userData.login}</p>
+              <p>{userData.location}</p>
+            </UserInfo>
+          )}
+        </>
       )}
+
+      {showProfile && <UserProfile username={username} />} {/* Renderiza o UserProfile se showProfile for true */}
     </Container>
   );
 };

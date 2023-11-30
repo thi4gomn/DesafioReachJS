@@ -86,7 +86,7 @@ const UserSearch = () => {
     <Container>
       {!showProfile && ( // Renderiza a página de busca se showProfile for false
         <>
-          <Logo src={githubLogo} alt="GitHub Logo" />
+          <Logo src={githubLogo} alt="GitHub Logo" /> {/* Adiciona o logo do GitHub */}
           <SearchInput
             type="text"
             value={username}
@@ -97,6 +97,7 @@ const UserSearch = () => {
 
           {userData && (
             <UserInfo onClick={handleImageClick}> {/* Adiciona o manipulador de eventos onClick à imagem */}
+              <p><strong>Click na foto para ver perfil !!</strong></p>
               <img src={userData.avatar_url} alt={userData.name} style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
               <h2>{userData.name}</h2>
               <p>{userData.login}</p>
@@ -106,7 +107,7 @@ const UserSearch = () => {
         </>
       )}
 
-      {showProfile && <UserProfile username={username} />} {/* Renderiza o UserProfile se showProfile for true */}
+      {showProfile && <UserProfile username={username} onBackClick={() => setShowProfile(false)} />} {/* Renderiza o UserProfile se showProfile for true */}
     </Container>
   );
 };

@@ -55,7 +55,6 @@ const UserInfo = styled.div`
   flex-direction: column; // Organiza os itens em uma coluna
   align-items: center; // Centraliza os itens horizontalmente
   justify-content: center; // Centraliza os itens verticalmente
-  text-align: center; // Centraliza o texto
   margin-top: 20px; // Move as informações do usuário para baixo
   cursor: pointer; // Muda o cursor para um ponteiro quando o mouse está sobre a imagem
 `;

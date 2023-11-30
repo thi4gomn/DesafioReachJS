@@ -21,6 +21,7 @@ interface GithubRepo {
   description: string;
   created_at: string;
   pushed_at: string;
+  html_url: string; // URL do repositório
 }
 
 // Definindo os estilos para o container do componente
@@ -92,11 +93,12 @@ const UserProfile = ({ username }: { username: string }) => {
           <RepoTitle>Repositórios</RepoTitle>
           {userRepos.map((repo) => (
             <div key={repo.name}>
-              <h3>{repo.name}</h3>
+              <p>Acessar repositório, clique aqui: <a href={repo.html_url} target="_blank" rel="noopener noreferrer">{repo.name}</a></p> {/* Adiciona um link para o repositório */}
               <p>Linguagem: {repo.language}</p>
               <p>Descrição: {repo.description}</p>
               <p>Data de criação: {repo.created_at}</p>
               <p>Data do último push: {repo.pushed_at}</p>
+              <p>----------------------------------------------------</p>
             </div>
           ))}
         </div>

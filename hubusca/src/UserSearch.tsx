@@ -4,6 +4,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import githubLogo from './img/github.gif'; // Substitua 'nome-da-sua-imagem.png' pelo nome real da sua imagem
 import UserProfile from './UserProfile'; // Importando o componente UserProfile
+import RecentSearches from './RecentSearches'; // Importando o componente RecentSearches
 
 // Definindo a interface para os dados do usuário do GitHub
 interface GithubUser {
@@ -49,6 +50,13 @@ const SearchButton = styled.button`
   cursor: pointer;
 `;
 
+// Definindo os estilos para o contêiner dos botões
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+`;
+
 // Definindo os estilos para as informações do usuário
 const UserInfo = styled.div`
   display: flex; // Adiciona flexbox
@@ -65,12 +73,15 @@ const UserSearch = () => {
   const [username, setUsername] = useState('');
   const [userData, setUserData] = useState<GithubUser | null>(null);
   const [showProfile, setShowProfile] = useState(false); // Novo estado para rastrear se o perfil do usuário deve ser exibido
+  const [recentSearches, setRecentSearches] = useState<GithubUser[]>([]); // Novo estado para armazenar as pesquisas recentes
+  const [showRecentSearches, setShowRecentSearches] = useState(false); // Novo estado para rastrear se a página de pesquisas recentes deve ser exibida
 
   // Definindo a função para buscar os dados do usuário
   const fetchUser = async () => {
     try {
       const response = await axios.get<GithubUser>(`https://api.github.com/users/${username}`);
       setUserData(response.data);
+      setRecentSearches((prevSearches) => [response.data, ...prevSearches]); // Adiciona o usuário pesquisado ao início do array de pesquisas recentes
     } catch (error) {
       console.error("Erro ao buscar usuário", error);
     }
@@ -81,10 +92,17 @@ const UserSearch = () => {
     setShowProfile(true); // Define showProfile como true quando a imagem é clicada
   };
 
-  // Retornando o JSX para o componente
-  return (
+  // Função para lidar com o clique no botão "Recentes Pesquisados"
+  const handleRecentSearchesClick = () => {
+    setShowRecentSearches(true); // Define showRecentSearches como true quando o botão "Recentes Pesquisados" é clicado
+  };
+
+// Retornando o JSX para o componente
+return (
     <Container>
-      {!showProfile && ( // Renderiza a página de busca se showProfile for false
+      {showProfile && <UserProfile username={username} onBackClick={() => setShowProfile(false)} />} {/* Renderiza o UserProfile se showProfile for true */}
+      {showRecentSearches && <RecentSearches users={recentSearches} />} {/* Renderiza o RecentSearches se showRecentSearches for true */}
+      {!showProfile && !showRecentSearches && ( // Renderiza a página de busca se showProfile e showRecentSearches forem false
         <>
           <Logo src={githubLogo} alt="GitHub Logo" /> {/* Adiciona o logo do GitHub */}
           <SearchInput
@@ -93,7 +111,10 @@ const UserSearch = () => {
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Digite o nome do usuário do GitHub"
           />
-          <SearchButton onClick={fetchUser}>Buscar</SearchButton>
+          <ButtonContainer>
+            <SearchButton onClick={fetchUser}>Buscar</SearchButton>
+            <SearchButton onClick={handleRecentSearchesClick}>Recentes Pesquisados</SearchButton> {/* Novo botão para exibir as pesquisas recentes */}
+          </ButtonContainer>
 
           {userData && (
             <UserInfo onClick={handleImageClick}> {/* Adiciona o manipulador de eventos onClick à imagem */}
@@ -106,8 +127,6 @@ const UserSearch = () => {
           )}
         </>
       )}
-
-      {showProfile && <UserProfile username={username} onBackClick={() => setShowProfile(false)} />} {/* Renderiza o UserProfile se showProfile for true */}
     </Container>
   );
 };

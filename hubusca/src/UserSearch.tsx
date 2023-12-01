@@ -5,14 +5,7 @@ import styled from 'styled-components';
 import githubLogo from './img/github.gif'; // Substitua 'nome-da-sua-imagem.png' pelo nome real da sua imagem
 import UserProfile from './UserProfile'; // Importando o componente UserProfile
 import RecentSearches from './RecentSearches'; // Importando o componente RecentSearches
-
-// Definindo a interface para os dados do usuário do GitHub
-interface GithubUser {
-  avatar_url: string;
-  name: string;
-  login: string;
-  location: string;
-}
+import { GithubUser } from './GithubUser';
 
 // Definindo os estilos para o container do componente
 const Container = styled.div`
@@ -101,7 +94,7 @@ const UserSearch = () => {
 return (
     <Container>
       {showProfile && <UserProfile username={username} onBackClick={() => setShowProfile(false)} />} {/* Renderiza o UserProfile se showProfile for true */}
-      {showRecentSearches && <RecentSearches users={recentSearches} />} {/* Renderiza o RecentSearches se showRecentSearches for true */}
+      {showRecentSearches && <RecentSearches users={recentSearches} onBackClick={() => setShowRecentSearches(false)} />} {/* Renderiza o RecentSearches se showRecentSearches for true */}
       {!showProfile && !showRecentSearches && ( // Renderiza a página de busca se showProfile e showRecentSearches forem false
         <>
           <Logo src={githubLogo} alt="GitHub Logo" /> {/* Adiciona o logo do GitHub */}
